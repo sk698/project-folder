@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Prediction Chatbot</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #chat-area {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 200px;
+            overflow-y: scroll;
+            background-color: #eee;
+            border-radius: 4px;
+        }
+        #user-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .user-message {
+            text-align: right;
+            margin-bottom: 5px;
+            color: #007bff;
+        }
+        .bot-message {
+            text-align: left;
+            margin-bottom: 5px;
+            color: #333;
+            background-color: #ddd;
+            padding: 5px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Disease Prediction Chatbot</h1>
+        <div id="chat-area">
+            <div class="bot-message">Hello! How can I help you today?</div>
+        </div>
+        <input type="text" id="user-input" placeholder="Enter your symptoms...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const userInput = document.getElementById('user-input').value;
+            document.getElementById('chat-area').innerHTML += `<div class="user-message">${userInput}</div>`;
+            document.getElementById('user-input').value = ''; // Clear input
+
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: userInput }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('chat-area').innerHTML += `<div class="bot-message">${data.response}</div>`;
+                // Scroll to the bottom of the chat area
+                const chatArea = document.getElementById('chat-area');
+                chatArea.scrollTop = chatArea.scrollHeight;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                document.getElementById('chat-area').innerHTML += '<div class="bot-message">Sorry, there was an error communicating with the server.</div>';
+            });
+        }
+
+        // Allow sending message on Enter key press
+        document.getElementById('user-input').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+pandas
+scikit-learn
+nltk
+fastapi
+uvicorn
+
+Flask
+pandas
+scikit-learn
+nltk
